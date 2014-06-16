@@ -15,7 +15,7 @@
  import java.util.concurrent.ConcurrentHashMap;
  import utils.BinBed;
  
- public class BedMap
+ public class BedMap <T extends BedAbstract>
  {
    protected Map<String, ConcurrentHashMap<Integer, ArrayList<BedAbstract>>> bedFile;
    private Path inFile;
@@ -123,12 +123,12 @@
      }
    }
  
-   private BedAbstract loadLine(String line)
+   private <T extends BedAbstract> T loadLine(String line)
    {
-     BedAbstract bedObject = null;
+     T bedObject = null;
      String[] segments = line.split("\\t");
      if (this.type == 0) {
-       bedObject = new BedEntry(segments[0], Integer.parseInt(segments[1]), Integer.parseInt(segments[2]));
+       bedObject = (T) new BedSimple(segments[0], Integer.parseInt(segments[1]), Integer.parseInt(segments[2]));
      }
      return bedObject;
    }
@@ -137,7 +137,7 @@
    {
      this.inFile = file;
    }
-   public void addBedData(String chr, Integer bin, BedAbstract bed) {
+   public <T extends BedAbstract> void addBedData(String chr, Integer bin, T bed) {
      if (this.bedFile.containsKey(chr)) {
        if (((ConcurrentHashMap)this.bedFile.get(chr)).containsKey(bin)) {
          ((ArrayList)((ConcurrentHashMap)this.bedFile.get(chr)).get(bin)).add(bed);
@@ -192,14 +192,15 @@
      }
    }
  
-   public void combineBedMaps(BedMap map) { 
+   public <T extends BedAbstract> void combineBedMaps(BedMap<T> map) { 
        String chr;
        int bins;
        for (Iterator i$ = map.getListChrs().iterator(); i$.hasNext(); ) { 
            chr = (String)i$.next();
-       for (i$ = map.getBins(chr).iterator(); i$.hasNext(); ) { bins = ((Integer)i$.next()).intValue();
-         for (BedAbstract bed : map.getBedAbstractList(chr, Integer.valueOf(bins)))
-           addBedData(chr, Integer.valueOf(bins), bed);  }  
+       for (i$ = map.getBins(chr).iterator(); i$.hasNext(); ) { 
+           bins = ((Integer)i$.next()).intValue();
+           for (BedAbstract bed : map.getBedAbstractList(chr, Integer.valueOf(bins)))
+            addBedData(chr, Integer.valueOf(bins), bed);  }  
        }  
    } 
    public void removeBedData(BedAbstract bed, int bin, int i) throws BedFileException {
@@ -232,16 +233,17 @@
      return chrs;
    }
  
-   public ArrayList<BedAbstract> getBedAbstractList(String chr, Integer bin) {
+   public <T extends BedAbstract> ArrayList<T> getBedAbstractList(String chr, Integer bin) {
      if (this.bedFile.containsKey(chr)) {
-       if (((ConcurrentHashMap)this.bedFile.get(chr)).containsKey(bin)) return (ArrayList)((ConcurrentHashMap)this.bedFile.get(chr)).get(bin);
+       if (((ConcurrentHashMap)this.bedFile.get(chr)).containsKey(bin)) 
+           return (ArrayList<T>)this.bedFile.get(chr).get(bin);
        return null;
      }return null;
    }
  
-   public ArrayList<BedAbstract> getSortedBedAbstractList(String chr) {
+   public <T extends BedAbstract> ArrayList<T> getSortedBedAbstractList(String chr) {
      if (this.bedFile.containsKey(chr)) {
-       ArrayList sorted = new ArrayList();
+       ArrayList<T> sorted = new ArrayList();
        Set bins = ((ConcurrentHashMap)this.bedFile.get(chr)).keySet();
        for (Iterator i$ = bins.iterator(); i$.hasNext(); ) { int b = ((Integer)i$.next()).intValue();
          sorted.addAll((Collection)((ConcurrentHashMap)this.bedFile.get(chr)).get(Integer.valueOf(b)));
