@@ -15,7 +15,8 @@
        Set bins = BinBed.getBins(start, end);
        for (i$ = bins.iterator(); i$.hasNext(); ) { int bin = ((Integer)i$.next()).intValue();
          if (a.containsBin(chr, bin)) {
-           for (BedAbstract bed : a.getBedAbstractList(chr, Integer.valueOf(bin))) {
+           for (Object c : a.getBedAbstractList(chr, Integer.valueOf(bin))) {
+               BedAbstract bed = (BedAbstract) c;
              if (ovCount(bed.Start(), bed.End(), start, end) > 0)
                return true;
            }
@@ -35,7 +36,8 @@
        Set bins = BinBed.getBins(start, end);
        for (i$ = bins.iterator(); i$.hasNext(); ) { int bin = ((Integer)i$.next()).intValue();
          if (a.containsBin(chr, bin)) {
-           for (BedAbstract bed : a.getBedAbstractList(chr, Integer.valueOf(bin))) {
+           for (Object c : a.getBedAbstractList(chr, Integer.valueOf(bin))) {
+               BedAbstract bed = (BedAbstract) c;
              if (ovCount(bed.Start(), bed.End(), start, end) > 0) {
                r.add(bed);
              }

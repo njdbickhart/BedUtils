@@ -35,7 +35,8 @@
            Set<Integer> binlist = BinBed.getBins(comp.Start(), comp.End());
            for (Integer i : binlist) {
              if (b.containsBin(chr, i.intValue())) {
-               for (BedAbstract z : b.getBedAbstractList(chr, i)) {
+               for (Object c : b.getBedAbstractList(chr, i)) {
+                   BedAbstract z = (BedAbstract) c;
                  if (checkOverlap(comp.Start(), z.Start(), comp.End(), z.End())) addIntersectionToPool(comp, z, chr, intersectedBed);
                }
              }
@@ -67,7 +68,8 @@
            Set<Integer> binlist = BinBed.getBins(comp.Start(), comp.End());
            for (Integer i : binlist) {
              if (b.containsBin(chr, i.intValue())) {
-               for (BedAbstract z : b.getBedAbstractList(chr, i)) {
+               for (Object c : b.getBedAbstractList(chr, i)) {
+                   BedAbstract z = (BedAbstract) c;
                  if (checkOverlap(comp.Start(), z.Start(), comp.End(), z.End())) {
                    if (z.Type() != 1) throw new BedFileException("IntersectMemBed error: Bed z must be type 1 (name variety); line 86");
                    addIntersectionToPool(comp, z, chr, intersectedBed, wa, wb);
@@ -108,11 +110,13 @@
            Set<Integer> binlist = BinBed.getBins(lstart, lend);
            for (Integer i : binlist)
              if (b.getBedAbstractList(segments[0], i) != null)
-               for (BedAbstract z : b.getBedAbstractList(segments[0], i))
+               for (Object c : b.getBedAbstractList(segments[0], i)){
+                   BedAbstract z = (BedAbstract) c;
                  if (checkOverlap(lstart, z.Start(), lend, z.End())) {
                    BedAbstract comp = new BedEntry(line);
                    addIntersectionToPool(comp, z, segments[0], intersectedBed);
                  }
+               }
          }
        }
      }
