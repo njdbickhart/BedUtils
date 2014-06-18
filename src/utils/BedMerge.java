@@ -12,6 +12,7 @@
  import java.nio.file.OpenOption;
  import java.nio.file.Path;
  import java.util.ArrayList;
+import java.util.Arrays;
  import java.util.Collection;
  import java.util.Collections;
  import java.util.Comparator;
@@ -273,13 +274,14 @@
        int i = 0;
        String cat = null;
        StringBuilder val = new StringBuilder();
-       Object[] nvals = names.keySet().toArray();
- 
-       for (i = 0; i < nvals.length; i++) {
+       ArrayList<String> narray = new ArrayList<>();
+       narray.addAll(names.keySet());
+       Collections.sort(narray);
+       for (i = 0; i < narray.size(); i++) {
          if (i == names.size() - 1) {
-           val.append(nvals[i].toString());
+           val.append(narray.get(i));
          } else {
-           val.append(nvals[i].toString());
+           val.append(narray.get(i));
            val.append(";");
          }
        }
