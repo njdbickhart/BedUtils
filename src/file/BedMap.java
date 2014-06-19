@@ -194,15 +194,20 @@
    }
  
    public void combineBedMaps(BedMap<T> map) { 
-       String chr;
-       int bins;
-       for (Iterator i$ = map.getListChrs().iterator(); i$.hasNext(); ) { 
-           chr = (String)i$.next();
-       for (i$ = map.getBins(chr).iterator(); i$.hasNext(); ) { 
-           bins = ((Integer)i$.next()).intValue();
-           for (T bed : map.getBedAbstractList(chr, Integer.valueOf(bins)))
-            addBedData(chr, Integer.valueOf(bins), bed);  }  
-       }  
+       for(String chr : map.getListChrs()){
+           for(int bin : map.getBins(chr)){
+               if(!this.bedFile.containsKey(chr)){
+                   this.bedFile.put(chr, new ConcurrentHashMap<Integer, ArrayList<T>>());
+                   this.bedFile.get(chr).put(bin, new ArrayList<T>());
+               }
+               if(!this.bedFile.get(chr).containsKey(bin)){
+                   this.bedFile.get(chr).put(bin, new ArrayList<T>());
+               }
+               for(T bed : map.getBedAbstractList(chr, bin)){
+                   this.bedFile.get(chr).get(bin).add(bed);
+               }
+           }
+       } 
    } 
    public void removeBedData(T bed, int bin, int i) throws BedFileException {
      String chr = bed.Chr();
