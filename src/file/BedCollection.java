@@ -1,40 +1,81 @@
  package file;
  
  import java.util.ArrayList;
- import java.util.HashMap;
- import java.util.Iterator;
- import java.util.Map;
- import java.util.Set;
- import utils.BinBed;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import utils.BinBed;
  
- public class BedCollection
+ /**
+ * This is a specialized construct that is lighter weight than the BedMap class.
+ * Yet to be implemented fully.
+ * @author bickhart
+ */
+public class BedCollection
  {
-   protected Map<String, HashMap<Integer, ArrayList<bedStore>>> collection;
+    /**
+     * The main data structure that contains the simple bed data
+     */
+    protected Map<String, HashMap<Integer, ArrayList<bedStore>>> collection;
  
    BedCollection(BedEntry b)
    {
      this.collection = new HashMap(30);
    }
  
-   public void insertIntoCollection(BedEntry b)
+    /**
+     * 
+     * @param b
+     */
+    public void insertIntoCollection(BedEntry b)
    {
      int bin = BinBed.getBin(b.Start(), b.End());
    }
  
-   public Set<String> getChrs()
+    /**
+     *
+     * @return
+     */
+    public Set<String> getChrs()
    {
      return this.collection.keySet();
    }
-   public int getStart(String chr, int bin, int index) {
+    /**
+     *
+     * @param chr
+     * @param bin
+     * @param index
+     * @return
+     */
+    public int getStart(String chr, int bin, int index) {
      return ((bedStore)((ArrayList)((HashMap)this.collection.get(chr)).get(Integer.valueOf(bin))).get(index)).start;
    }
-   public int getEnd(String chr, int bin, int index) {
+    /**
+     *
+     * @param chr
+     * @param bin
+     * @param index
+     * @return
+     */
+    public int getEnd(String chr, int bin, int index) {
      return ((bedStore)((ArrayList)((HashMap)this.collection.get(chr)).get(Integer.valueOf(bin))).get(index)).end;
    }
-   public Set<Integer> getBins(String chr) {
+    /**
+     *
+     * @param chr
+     * @return
+     */
+    public Set<Integer> getBins(String chr) {
      return ((HashMap)this.collection.get(chr)).keySet();
    }
-   public ArrayList<bedStore> getList(String chr, int bin) {
+    /**
+     *
+     * @param chr
+     * @param bin
+     * @return
+     */
+    public ArrayList<bedStore> getList(String chr, int bin) {
      return (ArrayList)((HashMap)this.collection.get(chr)).get(Integer.valueOf(bin));
    }
  
@@ -74,14 +115,23 @@
      return overlapped;
    }
  
-   protected class bedStore
+    /**
+     *
+     */
+    protected class bedStore
    {
      int bin;
      int start;
      int end;
      ArrayList<String> names;
  
-     protected bedStore(int start, int end, String name)
+        /**
+         *
+         * @param start
+         * @param end
+         * @param name
+         */
+        protected bedStore(int start, int end, String name)
      {
        this.start = start;
        this.end = end;
@@ -92,8 +142,3 @@
      }
    }
  }
-
-/* Location:           C:\SharedFolders\netbeans_workspace\BedUtils\dist\BedUtils.jar
- * Qualified Name:     file.BedCollection
- * JD-Core Version:    0.6.2
- */
