@@ -2,9 +2,9 @@
 
 import file.*;
 
- public class BedSimple1 extends BedAbstract
+ public class BedSimple extends BedAbstract
  {
-   public BedSimple1(String c, int s, int e, String name)
+   public BedSimple(String c, int s, int e, String name)
    {
      this.chr = c;
      this.start = s;
@@ -12,7 +12,7 @@ import file.*;
      this.name = name;
      this.type = 1;
    }
-   public BedSimple1(String c, int s, int e) {
+   public BedSimple(String c, int s, int e) {
      this.chr = c;
      this.start = s;
      this.end = e;
