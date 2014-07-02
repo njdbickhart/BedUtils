@@ -10,7 +10,7 @@
      throws BedFileException
    {
      String[] values = new String[3];
-     Pattern style = Pattern.compile("(chr.+):(\\d+)-(\\d+)");
+     Pattern style = Pattern.compile("(.+):(\\d+)-(\\d+)");
      Matcher match = style.matcher(ucsc);
  
      int x = 0;
