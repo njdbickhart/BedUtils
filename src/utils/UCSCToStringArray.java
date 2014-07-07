@@ -9,17 +9,20 @@
    public static String[] UCSCToArray(String ucsc)
      throws BedFileException
    {
+       ucsc = ucsc.trim();
      String[] values = new String[3];
      Pattern style = Pattern.compile("(.+):(\\d+)-(\\d+)");
      Matcher match = style.matcher(ucsc);
  
      int x = 0;
      while (match.find()) {
-       values[x] = match.group(x + 1);
+       values[0] = match.group(1);
+       values[1] = match.group(2);
+       values[2] = match.group(3);
        x++;
      }
-     if ((x < 2) || (x > 2)) {
-       throw new BedFileException("Error with UCSC conversion! Attempted UCSC to Bed coercion found only " + x + " matches!");
+     if (x < 1) {
+       throw new BedFileException("Error with UCSC conversion! Attempted UCSC to Bed coercion found only: " + values[0] + " " + values[1] + " " + values[2] + "!");
      }
      return values;
    }
