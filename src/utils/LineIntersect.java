@@ -6,7 +6,7 @@
  import java.util.Iterator;
  import java.util.Set;
  
- public class LineIntersect
+ public class LineIntersect <T extends BedAbstract>
  {
    public static boolean doesIntersect(BedMap a, String chr, int start, int end)
    {
@@ -46,6 +46,23 @@
        }
      }
      return r;
+   }
+   
+   public ArrayList<T> returnTypeIntersect(BedMap<T> a, String chr, int start, int end){
+       ArrayList<T> r = new ArrayList<>();
+       if(a.containsChr(chr)){
+           Set<Integer> bins = BinBed.getBins(start, end);
+           for(int b : bins){
+               if(a.containsBin(chr, b)){
+                   for(T bed : a.getBedAbstractList(chr, b)){
+                       if(ovCount(bed.Start(), bed.End(), start, end) > 0){
+                           r.add(bed);
+                       }
+                   }
+               }
+           }
+       }
+       return r;
    }
  
    public static int ovCount(int start1, int end1, int start2, int end2) {
