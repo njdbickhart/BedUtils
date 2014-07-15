@@ -9,11 +9,12 @@
  import java.util.ArrayList;
  import java.util.Collection;
  import java.util.Collections;
+ import java.util.HashSet;
  import java.util.Iterator;
  import java.util.Map;
  import java.util.Set;
  import java.util.concurrent.ConcurrentHashMap;
- import utils.BinBed;
+import utils.BinBed;
  
  public class BedMap <T extends BedAbstract>
  {
@@ -261,8 +262,12 @@
    }
  
    public Set<Integer> getBins(String chr) {
-     Set bins = ((ConcurrentHashMap)this.bedFile.get(chr)).keySet();
-     return bins;
+       if(this.bedFile.containsKey(chr)){
+        Set bins = ((ConcurrentHashMap)this.bedFile.get(chr)).keySet();
+        return bins;
+       }else{
+           return new HashSet<>();
+       }
    }
    public Map<String, ConcurrentHashMap<Integer, ArrayList<T>>> mapDump() {
      return this.bedFile;
