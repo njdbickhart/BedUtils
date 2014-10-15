@@ -242,7 +242,7 @@ import utils.BinBed;
  
    public ArrayList<T> getBedAbstractList(String chr, Integer bin) {
      if (this.bedFile.containsKey(chr)) {
-       if (((ConcurrentHashMap)this.bedFile.get(chr)).containsKey(bin)) 
+       if (this.bedFile.get(chr).containsKey(bin)) 
            return (ArrayList<T>)this.bedFile.get(chr).get(bin);
        return null;
      }return null;
@@ -251,9 +251,9 @@ import utils.BinBed;
    public ArrayList<T> getSortedBedAbstractList(String chr) {
      if (this.bedFile.containsKey(chr)) {
        ArrayList<T> sorted = new ArrayList();
-       Set bins = ((ConcurrentHashMap)this.bedFile.get(chr)).keySet();
+       Set bins = this.bedFile.get(chr).keySet();
        for (Iterator i$ = bins.iterator(); i$.hasNext(); ) { int b = ((Integer)i$.next()).intValue();
-         sorted.addAll((Collection)((ConcurrentHashMap)this.bedFile.get(chr)).get(Integer.valueOf(b)));
+         sorted.addAll((Collection)this.bedFile.get(chr).get(Integer.valueOf(b)));
        }
        Collections.sort(sorted);
        return sorted;
@@ -263,7 +263,7 @@ import utils.BinBed;
  
    public Set<Integer> getBins(String chr) {
        if(this.bedFile.containsKey(chr)){
-        Set bins = ((ConcurrentHashMap)this.bedFile.get(chr)).keySet();
+        Set<Integer> bins = this.bedFile.get(chr).keySet();
         return bins;
        }else{
            return new HashSet<>();
