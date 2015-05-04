@@ -10,6 +10,7 @@ import file.BedSimple;
 import implement.BedVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -117,6 +118,7 @@ public class BedFEOutput extends javax.swing.JFrame {
 
     public void addBedData(ArrayList<BedAbstract> data, String resultsMsg){
         this.jLabel1.setText("Bed results: " + resultsMsg);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         // Going to add the bed data, one row at a time
         DefaultTableModel tab = (DefaultTableModel) jTable1.getModel();
         for(BedAbstract b : data){
