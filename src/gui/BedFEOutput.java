@@ -7,7 +7,9 @@ package gui;
 
 import file.BedAbstract;
 import file.BedSimple;
+import implement.BedVariable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -44,7 +46,7 @@ public class BedFEOutput extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Chr", "Start", "End", "Extra"
+                "Chr", "Start", "End", "Extra Field1", "Extra Field2", "Extra Field3", "Extra Field4", "Extra Field5"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -118,16 +120,22 @@ public class BedFEOutput extends javax.swing.JFrame {
         // Going to add the bed data, one row at a time
         DefaultTableModel tab = (DefaultTableModel) jTable1.getModel();
         for(BedAbstract b : data){
-            BedSimple s = (BedSimple) b;
+            BedVariable s = (BedVariable) b;
+            Object row[] = new Object[8];
             
-            if(s.Type() == 0){
-                Object row[] = {s.Chr(), s.Start(), s.End(), ""};
-                tab.addRow(row);
-            }else{
-                Object row[] = {s.Chr(), s.Start(), s.End(), s.Name()};
-                tab.addRow(row);
+            Arrays.fill(row, "");
+            row[0] = s.Chr();
+            row[1] = s.Start();
+            row[2] = s.End();
+            int idx = 3;
+            for(String f : s.fields){
+                row[idx++] = f;
+                if(idx >= 8){
+                    break;
+                }
             }
             
+            tab.addRow(row);
         }
     }
     

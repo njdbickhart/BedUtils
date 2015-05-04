@@ -8,6 +8,7 @@ package gui;
 import file.BedAbstract;
 import file.BedMap;
 import file.BedSimple;
+import implement.BedVariable;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -283,20 +285,17 @@ public class BedFEJFrame extends javax.swing.JFrame {
             return;
         }
         
-        BedMap<BedSimple> comp = new BedMap<>();        
+        BedMap<BedVariable> comp = new BedMap<>();        
         try(BufferedReader input = Files.newBufferedReader(compFile, Charset.defaultCharset())){
             String line;
             while((line = input.readLine()) != null){
                 line = line.trim();
                 String[] segs = line.split("\t");
-                BedSimple bed;
+                BedVariable bed;
                 if(segs.length > 3){
-                    if(isNumeric(segs[3]))
-                        bed = new BedSimple(segs[0], Integer.parseInt(segs[1]), Integer.parseInt(segs[2]));
-                    else
-                        bed = new BedSimple(segs[0], Integer.parseInt(segs[1]), Integer.parseInt(segs[2]), segs[3]);
+                    bed = new BedVariable(segs[0], Integer.parseInt(segs[1]), Integer.parseInt(segs[2]), Arrays.copyOfRange(segs, 3, segs.length));
                 }else{
-                    bed = new BedSimple(segs[0], Integer.parseInt(segs[1]), Integer.parseInt(segs[2]));
+                    bed = new BedVariable(segs[0], Integer.parseInt(segs[1]), Integer.parseInt(segs[2]));
                 }
                 comp.addBedData(bed);
             }
@@ -353,13 +352,9 @@ public class BedFEJFrame extends javax.swing.JFrame {
             Path outp = Paths.get(this.intersectOutput.getText());            
             try(BufferedWriter out = Files.newBufferedWriter(outp, Charset.defaultCharset())){
                 for(BedAbstract b : results){
-                    BedSimple s = (BedSimple) b;
-                    StringBuilder str = new StringBuilder();
-                    str.append(s.Chr()).append("\t").append(s.Start()).append("\t").append(s.End());
-                    if(s.Type() == 1){
-                        str.append(str.append("\t")).append(s.Name());
-                    }
-                    out.write(str.toString());
+                    BedVariable s = (BedVariable) b;
+                    
+                    out.write(s.getOutStr());
                     out.write(System.lineSeparator());
                 }
             } catch (IOException ex) {
