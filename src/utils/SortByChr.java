@@ -9,12 +9,11 @@
  
  public class SortByChr
  {
-   public static ArrayList<String> ascendingChr(Set<String> chrs)
-   {
-     Comparator<String> chrcomp = new Comparator<String>()
-     {
-       public int compare(String t, String t1) {
-         Integer v1 = Integer.valueOf(0);
+     public static class ChrComp implements Comparator<String>{
+
+        @Override
+        public int compare(String t, String t1) {
+            Integer v1 = Integer.valueOf(0);
          Integer v2 = Integer.valueOf(0);
          Pattern chrnum = Pattern.compile("[cC]hr(.+)");
          Matcher m1 = chrnum.matcher(t);
@@ -27,8 +26,28 @@
            v2 = Integer.valueOf(SortByChr.retVal(m2.group(1)));
          }
          return v1.compareTo(v2);
-       }
-     };
+        }
+         
+     }
+     public static int GetChrOrder(String chr1, String chr2){
+         Integer v1 = Integer.valueOf(0);
+         Integer v2 = Integer.valueOf(0);
+         Pattern chrnum = Pattern.compile("[cC]hr(.+)");
+         Matcher m1 = chrnum.matcher(chr1);
+         if (m1.find()) {
+           v1 = Integer.valueOf(SortByChr.retVal(m1.group(1)));
+         }
+ 
+         Matcher m2 = chrnum.matcher(chr2);
+         if (m2.find()) {
+           v2 = Integer.valueOf(SortByChr.retVal(m2.group(1)));
+         }
+         return v1.compareTo(v2);
+     }
+     
+   public static ArrayList<String> ascendingChr(Set<String> chrs)
+   {
+     Comparator<String> chrcomp = new ChrComp();
      ArrayList retVals = new ArrayList();
      retVals.addAll(chrs);
      Collections.sort(retVals, chrcomp);

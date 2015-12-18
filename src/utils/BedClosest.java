@@ -28,6 +28,51 @@ public class BedClosest <T extends BedSimple>{
         this.regionExpand = distance;
     }
     
+    public BedMap<BedCompare> RetrieveClosestNameComp(BedMap<T> db, Path file){
+        BedMap<BedCompare> data = new BedMap<>();
+        try(BufferedReader input = Files.newBufferedReader(file, Charset.defaultCharset())){
+            String line;
+            while((line = input.readLine()) != null){
+                line = line.trim();
+                String[] segs = line.split("\t");
+                
+                BedSimple bed = new BedSimple(segs[0], Integer.parseInt(segs[1]), Integer.parseInt(segs[2]), segs[3]);
+                int rStart = bed.Start() - regionExpand;
+                int rEnd = bed.End() + regionExpand;
+                
+                if(rStart < 0){
+                    rStart = 0;
+                }
+                
+                List<T> query = this.intersect.returnTypeIntersect(db, bed.Chr(), rStart, rEnd);
+                T closest = null; 
+                int maxov = (regionExpand + 2) * -1;
+                
+                // get number of overlapping bases and keep only the entry that has the highest overlap count
+                for(T b : query){
+                    if(!b.Name().equals(bed.Name()))
+                        continue;
+                    int current = LineIntersect.ovCount(bed.Start(), bed.End(), b.Start(), b.End());
+                    if(current > maxov){
+                        closest = b;
+                        maxov = current;
+                    }
+                }
+                
+                if(closest == null){
+                    closest = (T) new BedSimple("NA", 0, 0, "NA");
+                }
+                
+                data.addBedData(new BedCompare(bed.Chr(), bed.Start(), bed.End(), bed.Name(), closest));
+            }
+            
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+        
+        return data;
+    }
+    
     public BedMap<BedCompare> RetrieveClosest(BedMap<T> db, Path file){
         BedMap<BedCompare> data = new BedMap<>();
         try(BufferedReader input = Files.newBufferedReader(file, Charset.defaultCharset())){
@@ -100,9 +145,13 @@ public class BedClosest <T extends BedSimple>{
             values.add(bed.Name());
             
             if(getDistance){
-                int min = (start > bed.End())? bed.End() : end;
-                int max = (end > bed.Start())? start : bed.Start();
-                values.add(String.valueOf(max - min));
+                if(bed.Start() == 0 && bed.End() == 0)
+                    values.add(String.valueOf(-1));
+                else{
+                    int min = (start > bed.End())? bed.End() : end;
+                    int max = (end > bed.Start())? start : bed.Start();
+                    values.add(String.valueOf(max - min));
+                }
             }
             
             return values;
