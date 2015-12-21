@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -148,9 +149,13 @@ public class BedClosest <T extends BedSimple>{
                 if(bed.Start() == 0 && bed.End() == 0)
                     values.add(String.valueOf(-1));
                 else{
-                    int min = (start > bed.End())? bed.End() : end;
-                    int max = (end > bed.Start())? start : bed.Start();
-                    values.add(String.valueOf(max - min));
+                    if(LineIntersect.ovCount(start, end, bed.Start(), bed.End()) > 0){
+                        values.add(String.valueOf(0));
+                    }else{
+                        int[] vals = {start, end, bed.Start(), bed.End()};
+                        Arrays.sort(vals, 0, 4);                    
+                        values.add(String.valueOf(vals[2] - vals[1]));
+                    }
                 }
             }
             
