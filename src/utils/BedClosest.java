@@ -149,7 +149,7 @@ public class BedClosest <T extends BedSimple>{
                 if(bed.Start() == 0 && bed.End() == 0)
                     values.add(String.valueOf(-1));
                 else{
-                    if(LineIntersect.ovCount(start, end, bed.Start(), bed.End()) > 0){
+                    if(LineIntersect.ovCount(start, end, bed.Start(), bed.End()) > 0 && bed.Chr().equals(chr)){
                         values.add(String.valueOf(0));
                     }else{
                         int[] vals = {start, end, bed.Start(), bed.End()};
